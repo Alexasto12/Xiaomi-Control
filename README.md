@@ -43,6 +43,22 @@ go mod tidy
 go build ./...
 ```
 
+### Ejecutar la app
+
+- En PowerShell:
+
+```powershell
+.\run.ps1
+```
+
+- En CMD:
+
+```cmd
+run.bat
+```
+
+> Importante: no utilices `go run main.go`, ya que Go necesita compilar todos los archivos del paquete.
+
 ### Frontend
 
 ```powershell
@@ -67,5 +83,5 @@ npm run build
 
 ## Notas adicionales
 
-- El backend invoca `bridge.py` de forma nativa con la firma exacta esperada por el puente.
+- El backend invoca el puente MIOT a través de un `bridge.py` embebido, lo que permite que el ejecutable funcione sin depender de rutas relativas externas.
 - La UI no expone endpoints HTTP externos; la comunicación es interna entre React y el backend Wails.

@@ -24,3 +24,19 @@ yarn-error.log*
 *.swp
 *.swo
 .DS_Store
+
+# Generated build outputs
+build/
+build/bin/
+*.rxe
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temporary files
+*.tmp
+*.temp
+*~

@@ -2,12 +2,18 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
+
+//go:embed bridge.py
+var bridgeScript []byte
 
 const (
 	deviceIP    = "192.168.1.163"
@@ -39,8 +45,38 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+func ensureBridgeScript() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("unable to locate executable path: %w", err)
+	}
+
+	exeDir := filepath.Dir(exePath)
+	candidate := filepath.Join(exeDir, "bridge.py")
+	if _, err := os.Stat(candidate); err == nil {
+		return candidate, nil
+	}
+
+	tmpDir := filepath.Join(os.TempDir(), "xiaomi-miot-bridge")
+	if err := os.MkdirAll(tmpDir, 0o755); err != nil {
+		return "", fmt.Errorf("unable to create temp bridge directory: %w", err)
+	}
+
+	tmpPath := filepath.Join(tmpDir, "bridge.py")
+	if err := os.WriteFile(tmpPath, bridgeScript, 0o755); err != nil {
+		return "", fmt.Errorf("unable to write embedded bridge.py: %w", err)
+	}
+
+	return tmpPath, nil
+}
+
 func runMiotCmd(action string, payload string) (string, error) {
-	cmd := exec.Command(pythonBin, "bridge.py", deviceIP, deviceToken, action, payload)
+	bridgePath, err := ensureBridgeScript()
+	if err != nil {
+		return "", err
+	}
+
+	cmd := exec.Command(pythonBin, bridgePath, deviceIP, deviceToken, action, payload)
 	out, err := cmd.CombinedOutput()
 	raw := strings.TrimSpace(string(out))
 
