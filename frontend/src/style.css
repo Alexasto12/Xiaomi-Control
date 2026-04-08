@@ -1,0 +1,266 @@
+:root {
+  --bg-0: #090d10;
+  --bg-1: #11181e;
+  --bg-2: #1a252e;
+  --line: #26343f;
+  --text-0: #e6edf2;
+  --text-1: #95a4b2;
+  --ok: #1ecb7c;
+  --warn: #d9b24b;
+  --alert: #e88a3c;
+  --danger: #ff5050;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  color: var(--text-0);
+  font-family: "Fira Code", "Roboto Mono", "JetBrains Mono", monospace;
+  background:
+    linear-gradient(140deg, rgba(26, 37, 46, 0.35), transparent 60%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    var(--bg-0);
+}
+
+.dashboard-shell {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 20px;
+  gap: 18px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(17, 24, 30, 0.95), rgba(10, 15, 20, 0.95));
+  padding: 12px 16px;
+}
+
+.header-title-group h1 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+
+.header-title-group p {
+  margin: 5px 0 0;
+  color: var(--text-1);
+  font-size: 12px;
+}
+
+.connection-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-1);
+}
+
+.connection-online .chip-dot {
+  background: var(--ok);
+}
+
+.connection-offline .chip-dot {
+  background: var(--danger);
+}
+
+.connection-connecting .chip-dot {
+  background: var(--warn);
+}
+
+.dashboard-main {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+  min-height: 0;
+}
+
+.critical-panel,
+.control-panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(17, 24, 30, 0.95), rgba(10, 15, 20, 0.95));
+}
+
+.critical-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  min-height: 260px;
+}
+
+.critical-label {
+  margin: 0;
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 14px;
+}
+
+.pm25-value {
+  margin: 10px 0;
+  font-size: clamp(88px, 20vw, 180px);
+  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pm25-unknown {
+  color: var(--text-1);
+}
+
+.pm25-good {
+  color: var(--ok);
+}
+
+.pm25-moderate {
+  color: var(--warn);
+}
+
+.pm25-sensitive {
+  color: var(--alert);
+}
+
+.pm25-danger {
+  color: var(--danger);
+}
+
+.critical-unit {
+  margin: 0;
+  color: var(--text-1);
+  font-size: 14px;
+}
+
+.control-panel {
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.control-row {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(9, 13, 16, 0.55);
+}
+
+.control-label {
+  color: var(--text-1);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.toggle-button,
+.segmented-group button {
+  border: 1px solid #3b4e5e;
+  background: #111a21;
+  color: var(--text-0);
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+.toggle-button {
+  justify-self: start;
+  min-width: 96px;
+}
+
+.toggle-on {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.toggle-off {
+  border-color: #4e5964;
+  color: #98a5b2;
+}
+
+.segmented-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.segmented-group button.segmented-active {
+  border-color: #7db1d8;
+  color: #cde6f9;
+  background: #1c2933;
+}
+
+.segmented-group button:disabled {
+  cursor: not-allowed;
+  border-color: #303f4b;
+  color: #6f7d89;
+  background: #0f161c;
+}
+
+.dashboard-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 10px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(17, 24, 30, 0.95), rgba(10, 15, 20, 0.95));
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text-1);
+}
+
+.error-slot {
+  text-align: right;
+  color: var(--danger);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 940px) {
+  .dashboard-main {
+    grid-template-columns: 1fr;
+  }
+
+  .pm25-value {
+    font-size: clamp(72px, 28vw, 140px);
+  }
+
+  .dashboard-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .error-slot {
+    text-align: left;
+  }
+}
