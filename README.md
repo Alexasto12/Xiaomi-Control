@@ -1,20 +1,44 @@
 # Xiaomi MIOT Local Dashboard
 
-Aplicación de escritorio nativa para Windows construida con Wails (Go + React + TypeScript) que funciona como panel local de telemetría para el purificador Xiaomi Smart Air Purifier 4 Compact (`zhimi.airp.cpa4`).
+![Platform](https://img.shields.io/badge/Platform-Windows-blue?style=flat-square)
+![Stack](https://img.shields.io/badge/Stack-Go%20%2B%20React%20%2B%20TypeScript-blueviolet?style=flat-square)
+![Runtime](https://img.shields.io/badge/Integration-Wails-brightgreen?style=flat-square)
 
-## Arquitectura
+Aplicación de escritorio local para monitorizar y controlar un purificador Xiaomi Smart Air Purifier 4 Compact (`zhimi.airp.cpa4`) con arquitectura de puente nativo basada en Wails.
 
-- `bridge.py`: puente Python que cifra y envía payloads MIOT mediante `python-miio`.
-- `main.go`: bootstrap de Wails que carga los assets embebidos y arranca la aplicación.
-- `app.go`: backend Wails expone métodos para el frontend y ejecuta `bridge.py` con `os/exec`.
-- `frontend/`: UI React + TypeScript con polling de telemetría y controles de Power, Mode y Fan Speed.
+## Características principales
 
-## Comandos
+- Panel de telemetría en tiempo real para PM2.5 con codificación de color intuitiva.
+- Control de energía `On/Off`, modos de operación (`Auto`, `Sleep`, `Manual`) y velocidad de ventilador 1-3.
+- Polling silencioso cada 5 segundos para mantener datos frescos sin parpadeos en la UI.
+- Gestión de conexión robusta: la interfaz muestra `Online` o `Offline` según el resultado del puente MIOT.
+- Arquitectura local segura: el backend no utiliza HTTP, sino `os/exec` para invocar `bridge.py` y cifrar las solicitudes MIOT.
+
+## Arquitectura del proyecto
+
+- `bridge.py`: motor Python que cifra y envía payloads MIOT con `python-miio`.
+- `main.go`: bootstrap Wails que carga assets embebidos y expone la aplicación de escritorio.
+- `app.go`: backend Wails con métodos públicos para el frontend:
+  - `GetTelemetry()`
+  - `SetPower(state bool)`
+  - `SetMode(mode int)`
+  - `SetFanSpeed(speed int)`
+- `frontend/`: interfaz React + TypeScript y CSS puro.
+
+## MIOT Mapping usado
+
+El backend utiliza exclusivamente estos `siid`/`piid` para generar los payloads:
+
+- PM2.5: `siid=3`, `piid=4`
+- Power: `siid=2`, `piid=1`
+- Mode: `siid=2`, `piid=4`
+- Fan Speed: `siid=2`, `piid=5`
+
+## Uso
 
 ### Backend
 
 ```powershell
-cd "c:\Users\Alexasto\Desktop\Xiaomi Control"
 go mod tidy
 go build ./...
 ```
@@ -22,7 +46,7 @@ go build ./...
 ### Frontend
 
 ```powershell
-cd "c:\Users\Alexasto\Desktop\Xiaomi Control\frontend"
+cd frontend
 npm install
 npm run build
 ```
@@ -30,16 +54,18 @@ npm run build
 ## Requisitos
 
 - Windows 10/11
+- Python 3.14 con `python-miio`
 - `C:\Python314\python.exe`
-- Python 3.14 con `python-miio` instalado
-- Wails configurado si se desea compilar el paquete nativo
+- Wails instalado para compilar el paquete de escritorio nativo
 
-## Notas
+## Diseño UI
 
-- El backend usa `python bridge.py <IP> <TOKEN> <ACTION> <JSON_PAYLOAD>`.
-- El frontend realiza polling cada 5000 ms y muestra estado `Online`/`Offline`.
-- Las propiedades MIOT usadas son:
-  - PM2.5: `siid=3`, `piid=4`
-  - Power: `siid=2`, `piid=1`
-  - Mode: `siid=2`, `piid=4`
-  - Fan Speed: `siid=2`, `piid=5`
+- Estética técnica y funcional, inspirada en dashboards industriales.
+- Tipografía monoespaciada para datos numéricos.
+- Controles discretos para modo y velocidad del ventilador.
+- Se prioriza lectura rápida y estado claro sin animaciones innecesarias.
+
+## Notas adicionales
+
+- El backend invoca `bridge.py` de forma nativa con la firma exacta esperada por el puente.
+- La UI no expone endpoints HTTP externos; la comunicación es interna entre React y el backend Wails.
