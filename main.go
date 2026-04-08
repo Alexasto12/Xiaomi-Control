@@ -16,7 +16,7 @@ func main() {
 	app := NewApp()
 
 	err := wails.Run(&options.App{
-		Title:  "Xiaomi MIOT Local Dashboard",
+		Title:  "Xiaomi MIOT Local Dashboard - PushSync R7",
 		Width:  1200,
 		Height: 760,
 		AssetServer: &assetserver.Options{
@@ -24,6 +24,7 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 11, G: 15, B: 18, A: 1},
 		OnStartup:        app.startup,
+		OnShutdown:       app.shutdown,
 		Bind: []interface{}{
 			app,
 		},

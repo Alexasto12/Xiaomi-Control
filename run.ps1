@@ -1,2 +1,5 @@
 Set-Location $PSScriptRoot
-Go run .
+Set-Location frontend
+npm run build
+Set-Location ..
+go run .

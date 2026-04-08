@@ -10,8 +10,10 @@ Aplicación de escritorio local para monitorizar y controlar un purificador Xiao
 
 - Panel de telemetría en tiempo real para PM2.5 con codificación de color intuitiva.
 - Control de energía `On/Off`, modos de operación (`Auto`, `Sleep`, `Manual`) y velocidad de ventilador 1-3.
-- Polling silencioso cada 5 segundos para mantener datos frescos sin parpadeos en la UI.
+- Cadencia push indoor cada 15 segundos (sin polling en React).
+- PM2.5 exterior con Open-Meteo cada 60 segundos, configurable por ciudad desde la UI.
 - Gestión de conexión robusta: la interfaz muestra `Online` o `Offline` según el resultado del puente MIOT.
+- Gestión de capacidades del modelo: fan y filtro muestran soporte/no soporte sin romper la interfaz.
 - Arquitectura local segura: el backend no utiliza HTTP, sino `os/exec` para invocar `bridge.py` y cifrar las solicitudes MIOT.
 
 ## Arquitectura del proyecto
@@ -23,6 +25,8 @@ Aplicación de escritorio local para monitorizar y controlar un purificador Xiao
   - `SetPower(state bool)`
   - `SetMode(mode int)`
   - `SetFanSpeed(speed int)`
+  - `GetOutdoorCity()`
+  - `SetOutdoorCity(city string)`
 - `frontend/`: interfaz React + TypeScript y CSS puro.
 
 ## MIOT Mapping usado
@@ -85,3 +89,5 @@ npm run build
 
 - El backend invoca el puente MIOT a través de un `bridge.py` embebido, lo que permite que el ejecutable funcione sin depender de rutas relativas externas.
 - La UI no expone endpoints HTTP externos; la comunicación es interna entre React y el backend Wails.
+- En Windows el proceso Python del bridge se ejecuta oculto para evitar popups de consola.
+- El estado de filtro depende del modelo MIOT; si la propiedad no existe, la UI lo reporta como no soportado con su código MIOT.
